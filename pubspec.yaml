@@ -1,0 +1,6 @@
+name: contracts_for_dart
+environment:
+  sdk: '^3.5.0'
+dependencies:
+  macros: 0.1.2-main.4
+  source_span: ^1.10.0
