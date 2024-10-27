@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:contracts_for_dart/utils/source_span_parser.dart';
 import 'package:macros/macros.dart';
 
-macro class ClassContract implements ClassDefinitionMacro{
-  ClassContract({required this.invariant});
+ macro class ClassContract2 implements ClassDefinitionMacro{
+  const ClassContract2({required this.invariant});
 
-  String invariant;
+  final String invariant;
   
   @override
   FutureOr<void> buildDefinitionForClass(ClassDeclaration clazz, TypeDefinitionBuilder builder) {
@@ -54,4 +54,11 @@ macro class ClassContract implements ClassDefinitionMacro{
       }
     }
   }
+}
+
+
+class ClassContract{
+  final String invariant;
+
+  const ClassContract({required this.invariant});
 }
