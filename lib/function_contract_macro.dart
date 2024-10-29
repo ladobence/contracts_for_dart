@@ -16,14 +16,14 @@ macro class FunctionContract implements FunctionDefinitionMacro{
     final spans = parser.parseFile();
     final invariant = _findInvariant(spans, function.identifier.name);
     final (oldVariables,modifiedPostcondition) = _findOldVariables(postcondition);
-    final (originalfunctionBody,returnUsedInPostcondition) = _modifyOriginalFunctionBody(spans, function.identifier.name, postcondition, invariant ?? "", oldVariables ?? "");
+    final (originalfunctionBody,returnUsedInPostcondition) = _modifyOriginalFunctionBody(spans, function.identifier.name, postcondition, invariant, modifiedPostcondition);
   
     
     builder.augment(FunctionBodyCode.fromParts(["{\n "+
     "${invariant != "" ? "if(!($invariant)){ \n "+
     "   throw ('Invariant failed, $invariant');\n"+
     "}" : ""} \n "+
-    "${oldVariables ?? ""} \n "+
+    "${oldVariables} \n "+
     "if(!(${precondition == "" ? true : precondition})){ \n "+
     "   throw ('Precondition failed, $precondition'); \n "+
     "} \n $originalfunctionBody \n "+
@@ -63,9 +63,9 @@ bool found = false;
     return (originalfunctionBody,returnUsed);
 }
 
-(String?,String) _findOldVariables(String postcondition){
+(String,String) _findOldVariables(String postcondition){
     final variablesToSave = <String>[];
-    var addToBody;
+    var addToBody = "";
     if(postcondition.contains("old")){
       RegExp exp = RegExp(r'old\([A-Z-a-z-0-9-_]*\)');
       final matches = exp.allMatches(postcondition);
@@ -89,9 +89,9 @@ bool found = false;
     return (addToBody,modifiedPostcondition);
 }
 
-String? _findInvariant(Iterable<SourceSpan> spans, String functionName){
+String _findInvariant(Iterable<SourceSpan> spans, String functionName){
     var cc = false;
-    var invariant;
+    var invariant = "";
     var counter = 0;
     bool inClass = false;
 
